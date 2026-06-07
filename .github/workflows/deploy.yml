@@ -54,6 +54,11 @@ jobs:
           script: |
             set -e
 
+            cd ~/lncp-app/lcp
+
+            git fetch origin
+            git reset --hard origin/main
+
             docker compose down --remove-orphans || true
 
             docker compose pull
