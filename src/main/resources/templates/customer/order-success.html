@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Order Placed | Laxmi Narayana Curry Point</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark lncp-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/"><i class="bi bi-shop me-2"></i>Laxmi Narayana Curry Point</a>
+    </div>
+</nav>
+
+<div class="container mt-5 pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow text-center">
+                <div class="card-body py-5">
+                    <div class="success-icon mb-3">✅</div>
+                    <h2 class="fw-bold text-success">Order Placed!</h2>
+                    <p class="text-muted mb-3">Your order has been received. Please save your Order ID.</p>
+
+                    <div class="order-id-box mb-4">
+                        <div class="text-muted small mb-1">Your Order ID</div>
+                        <h1 class="fw-bold text-danger display-4" th:text="${order.orderId}">LNCP-1001</h1>
+                    </div>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table table-sm">
+                            <thead class="table-light"><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead>
+                            <tbody>
+                                <tr th:each="item : ${order.orderItems}">
+                                    <td th:text="${item.itemName}">Item</td>
+                                    <td th:text="${item.quantity}">1</td>
+                                    <td>₹<span th:text="${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">0</span></td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr><td colspan="2" class="fw-bold">Total</td>
+                                    <td class="fw-bold text-danger">₹<span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}">0</span></td></tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <span th:class="'badge fs-6 mb-4 ' + ${order.statusBadgeClass}" th:text="${order.status}">ACCEPTED</span>
+
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-3">
+                        <a th:href="'/track/' + ${order.orderId}" class="btn btn-danger btn-lg">
+                            <i class="bi bi-search me-2"></i>Track My Order
+                        </a>
+                        <a href="/menu" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-shop me-2"></i>Order More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

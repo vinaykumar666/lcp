@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Menu | Laxmi Narayana Curry Point</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark lncp-navbar sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-5" href="/">
+            <i class="bi bi-shop me-2"></i>Laxmi Narayana Curry Point
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a href="/track" class="btn btn-outline-light btn-sm"><i class="bi bi-search me-1"></i>Track Order</a>
+            <a href="/cart" class="btn btn-warning btn-sm position-relative">
+                <i class="bi bi-cart3"></i>
+                <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
+                      th:text="${cartCount}" th:if="${cartCount > 0}">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Banner -->
+<div class="lncp-hero text-white text-center py-4">
+    <div class="container">
+        <h1 class="display-6 fw-bold mb-1"><i class="bi bi-fire me-2 text-warning"></i>Laxmi Narayana Curry Point</h1>
+        <p class="mb-0 opacity-75">Authentic South Indian Flavors • Fresh & Hot • Order Now</p>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+<div class="container mt-2" th:if="${success}">
+    <div class="alert alert-success alert-dismissible fade show py-2" role="alert">
+        <i class="bi bi-check-circle me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<!-- Category Nav -->
+<div class="container mt-3">
+    <div class="d-flex gap-2 flex-wrap mb-3">
+        <a th:each="entry : ${menuGroups}" class="btn btn-sm btn-outline-danger"
+           th:href="'#cat-' + ${entry.key.replace(' ', '-').replace(''',' ')}"
+           th:text="${entry.key}">Category</a>
+    </div>
+</div>
+
+<!-- Menu Groups -->
+<div class="container pb-5">
+    <div th:each="entry : ${menuGroups}" class="mb-4">
+        <div class="category-header" th:id="'cat-' + ${entry.key.replace(' ', '-').replace(''',' ')}">
+            <h4 class="mb-0">
+                <span th:if="${entry.key == 'Today&apos;s Specials'}" class="me-2">⭐</span>
+                <span th:if="${entry.key == 'VEG CURRIES'}" class="me-2">🥬</span>
+                <span th:if="${entry.key == 'NON VEG CURRIES'}" class="me-2">🍗</span>
+                <span th:if="${entry.key == 'RICE ITEMS'}" class="me-2">🍚</span>
+                <span th:text="${entry.key}">Category</span>
+            </h4>
+        </div>
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-4 col-xl-3" th:each="item : ${entry.value}">
+                <div class="card menu-card h-100 shadow-sm">
+                    <div class="menu-img-wrap">
+                        <div class="menu-emoji-placeholder" th:switch="${item.category.name()}">
+                            <span th:case="'TODAYS_SPECIALS'">⭐🍛</span>
+                            <span th:case="'VEG_CURRIES'">🥘</span>
+                            <span th:case="'NON_VEG_CURRIES'">🍗</span>
+                            <span th:case="'RICE_ITEMS'">🍚</span>
+                            <span th:case="*">🍽️</span>
+                        </div>
+                        <span th:if="${item.todaySpecial}" class="badge bg-warning text-dark special-badge">⭐ Special</span>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title mb-1 fw-semibold" th:text="${item.name}">Item</h6>
+                        <p class="card-text text-muted small mb-2 flex-grow-1" th:text="${item.description}">Desc</p>
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <span class="fw-bold text-danger fs-5">₹<span th:text="${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}">100</span></span>
+                            <form method="post" action="/cart/add" class="d-flex align-items-center gap-1">
+                                <input type="hidden" name="itemId" th:value="${item.id}"/>
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf}"/>
+                                <select name="quantity" class="form-select form-select-sm qty-select">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-cart-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Cart -->
+<div th:if="${cartCount > 0}" class="floating-cart-bar">
+    <div class="container">
+        <a href="/cart" class="btn btn-warning btn-lg w-100 fw-bold">
+            <i class="bi bi-cart3 me-2"></i>View Cart
+            <span class="badge bg-dark ms-2" th:text="${cartCount} + ' items'">0 items</span>
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

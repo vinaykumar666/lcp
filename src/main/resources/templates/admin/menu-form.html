@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Menu Item | Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+</head>
+<body>
+
+<nav class="navbar navbar-dark lncp-navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>LNCP Admin</a>
+        <a href="/admin/menu" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Menu</a>
+    </div>
+</nav>
+
+<div class="container mt-4 pb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header lncp-navbar text-white py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-plus-circle me-2" th:if="${menuItem.id == null}"></i>
+                        <i class="bi bi-pencil me-2" th:unless="${menuItem.id == null}"></i>
+                        <span th:text="${menuItem.id == null ? 'Add Menu Item' : 'Edit Menu Item'}">Form</span>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post"
+                          th:action="${menuItem.id == null ? '/admin/menu/new' : '/admin/menu/' + menuItem.id + '/edit'}"
+                          th:object="${menuItem}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Item Name *</label>
+                            <input type="text" class="form-control" th:field="*{name}" placeholder="e.g. Chicken Biryani"/>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Description</label>
+                            <textarea class="form-control" th:field="*{description}" rows="2" placeholder="Brief description..."></textarea>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Price (₹) *</label>
+                                <input type="number" step="0.01" class="form-control" th:field="*{price}" placeholder="0.00"/>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Category *</label>
+                                <select class="form-select" th:field="*{category}">
+                                    <option value="">-- Select --</option>
+                                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.name().replace('_',' ')}">Cat</option>
+                                </select>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Image URL <small class="text-muted">(Optional)</small></label>
+                            <input type="text" class="form-control" th:field="*{imageUrl}" placeholder="https://..."/>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" th:field="*{available}" id="available"/>
+                                    <label class="form-check-label fw-semibold" for="available">Available for Order</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" th:field="*{todaySpecial}" id="special"/>
+                                    <label class="form-check-label fw-semibold" for="special">⭐ Today's Special</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="/admin/menu" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger flex-grow-1 fw-bold">
+                                <i class="bi bi-save me-2"></i>Save Item
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
