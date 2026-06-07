@@ -66,7 +66,7 @@ public class CustomerController {
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("cartCount", getCartCount(session));
         model.addAttribute("total", cartItems.stream()
-            .mapToDouble(ci -> ci.getSubtotal()).sum());
+                .mapToDouble(ci -> ci.subtotal));
         return "customer/cart";
     }
 
